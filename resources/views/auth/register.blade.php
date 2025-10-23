@@ -4,8 +4,9 @@
         <div class="hidden lg:flex lg:w-1/2 items-center justify-center relative overflow-hidden">
             <!-- Background Image -->
             <img src="https://i.pinimg.com/1200x/7d/f6/cb/7df6cb0c32171c137f3bd849b80ead17.jpg" alt="MyPost App Background" class="absolute inset-0 w-full h-full object-cover opacity-20">
+            <!-- Dark overlay for dark mode -->
+            <div class="absolute inset-0 bg-black opacity-50 dark:opacity-70"></div>
             <div class="relative z-10 text-center text-white">
-                <h1 class="animate__animated animate__headShake text-4xl font-bold mb-4">MyPost</h1>
                 <p class="text-sm p-10 text-gray-200 mb-4 text-justify">Platform modern untuk berbagi konten dengan cepat dan mudah. MyPost memungkinkan pengguna untuk membuat, mengelola, dan membagikan postingan dalam format teks, gambar, atau media lainnya dengan tampilan yang bersih dan interaktif. Dengan fokus pada kemudahan penggunaan dan pengalaman pengguna yang menyenangkan, MyPost menghadirkan fitur-fitur seperti timeline personal, notifikasi real-time, dan opsi privasi yang dapat disesuaikan. Cocok untuk individu maupun komunitas yang ingin tetap terhubung dan mengekspresikan diri secara kreatif.</p>
             </div>
         </div>
@@ -13,15 +14,14 @@
         <!-- Form Section -->
         <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
             <div class="w-full max-w-md">
-                <!-- Logo (Mobile Only) -->
-                <div class="text-center mb-8 lg:hidden">
-                    <x-application-logo class="w-16 h-16 mx-auto mb-4 fill-current text-gray-500" />
-                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white">MyPost</h1>
-                </div>
-
                 <form method="POST" action="{{ route('register') }}" class="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-                    @csrf
+                    <!-- Logo -->
+                    <div class="text-center p-10">
+                        <img src="/logo/logo-lightmode.png" alt="MyPost Logo" class="w-40 h-auto mx-auto dark:hidden" />
+                        <img src="/logo/logo-darkmode.png" alt="MyPost Logo" class="w-40 h-auto mx-auto hidden dark:block" />
+                    </div>
 
+                    @csrf
                     <!-- Name -->
                     <div class="mb-4">
                         <x-input-label for="name" :value="__('Name')" class="text-gray-700 dark:text-gray-300" />
