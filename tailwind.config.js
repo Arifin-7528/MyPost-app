@@ -1,6 +1,5 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
-import 'animate.css';
 
 
 /** @type {import('tailwindcss').Config} */
