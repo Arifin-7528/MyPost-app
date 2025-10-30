@@ -46,4 +46,42 @@ class PostController extends Controller
 
         return redirect()->route('home')->with('success', 'Post created successfully!');
     }
+
+    public function like(Post $post)
+    {
+        $like = $post->likes()->where('user_id', auth()->id())->first();
+
+        if ($like) {
+            $like->delete();
+            $liked = false;
+        } else {
+            $post->likes()->create(['user_id' => auth()->id()]);
+            $liked = true;
+        }
+
+        return response()->json([
+            'liked' => $liked,
+            'likes_count' => $post->likes()->count(),
+        ]);
+    }
+
+    public function comment(Request $request, Post $post)
+    {
+        $request->validate([
+            'content' => 'required|string|max:255',
+        ]);
+
+        $comment = $post->comments()->create([
+            'user_id' => auth()->id(),
+            'content' => $request->content,
+        ]);
+
+        return response()->json([
+            'comment' => [
+                'user_name' => auth()->user()->name,
+                'content' => $comment->content,
+                'created_at' => $comment->created_at->diffForHumans(),
+            ],
+        ]);
+    }
 }

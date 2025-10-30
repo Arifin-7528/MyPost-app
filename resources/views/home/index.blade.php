@@ -60,17 +60,17 @@
 
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center">
-                                    <button class="flex items-center text-red-500 hover:text-red-700 mr-4">
-                                        <svg class="w-5 h-5 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                                    <button class="flex items-center text-red-500 hover:text-red-700 mr-4" onclick="toggleLike({{ $post->id }}, this)">
+                                        <svg class="w-5 h-5 mr-1 {{ $post->isLikedByUser() ? 'fill-current' : '' }}" fill="{{ $post->isLikedByUser() ? 'currentColor' : 'none' }}" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
                                         </svg>
-                                        {{ $post->likes_count }}
+                                        <span>{{ $post->likes_count }}</span>
                                     </button>
-                                    <button class="flex items-center text-gray-500 hover:text-gray-700">
+                                    <button class="flex items-center text-gray-500 hover:text-gray-700" onclick="openModal({{ $post->id }})">
                                         <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                         </svg>
-                                        Comment
+                                        Komentar
                                     </button>
                                 </div>
                             </div>
@@ -205,7 +205,17 @@
 
                 <div id="modal-caption" class="p-4 text-sm text-gray-200 border-b border-gray-700"></div>
 
+                <div id="modal-likes-count" class="p-4 text-sm text-gray-200 border-b border-gray-700"></div>
+
                 <div id="modal-comments" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm"></div>
+
+                <!-- Form komentar -->
+                <div class="p-4 border-t border-gray-700">
+                    <form id="comment-form" class="flex gap-2">
+                        <input type="text" id="comment-input" placeholder="Tambahkan komentar..." class="flex-1 bg-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" maxlength="255">
+                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold">Kirim</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -220,18 +230,29 @@
             'user_name' => $p->user->name,
             'user_photo' => $p->user->profile_photo_url,
             'created_at' => $p->created_at->format('d/m/Y'),
+            'likes_count' => $p->likes_count,
+            'comments' => $p->comments->map(function($c) {
+                return [
+                    'user_name' => $c->user->name,
+                    'content' => $c->content,
+                    'created_at' => $c->created_at->diffForHumans(),
+                ];
+            }),
         ];
     });
     @endphp
 
     <script>
     const postsData = @json($postsData);
+    let currentPostId = null;
 
     function openModal(id) {
         const post = postsData.find(p => p.id === id);
         const modal = document.getElementById('post-modal');
         const img = document.getElementById('modal-image');
         let vid = document.getElementById('modal-video');
+
+        currentPostId = id; // set current post id
 
         // reset
         img.classList.add('hidden');
@@ -274,12 +295,61 @@
         document.getElementById('modal-username').textContent = post.user_name;
         document.getElementById('modal-date').textContent = post.created_at;
         document.getElementById('modal-caption').textContent = post.caption || '';
+
+        // isi likes count
+        document.getElementById('modal-likes-count').textContent = post.likes_count + ' suka';
+
+        // isi comments
+        const commentsContainer = document.getElementById('modal-comments');
+        commentsContainer.innerHTML = '';
+        if (post.comments && post.comments.length > 0) {
+            post.comments.forEach(comment => {
+                const commentDiv = document.createElement('div');
+                commentDiv.className = 'text-sm';
+                commentDiv.innerHTML = `
+                    <strong>${comment.user_name}</strong> ${comment.content}
+                    <span class="text-gray-400 text-xs">${comment.created_at}</span>
+                `;
+                commentsContainer.appendChild(commentDiv);
+            });
+        } else {
+            commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Belum ada komentar.</p>';
+        }
+
+        // reset form komentar
+        document.getElementById('comment-input').value = '';
+    }
+
+    function toggleLike(postId, button) {
+        fetch(`/posts/${postId}/like`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            const countSpan = button.querySelector('span');
+            const icon = button.querySelector('svg');
+            countSpan.textContent = data.likes_count;
+            if (data.liked) {
+                icon.classList.add('fill-current');
+                icon.setAttribute('fill', 'currentColor');
+            } else {
+                icon.classList.remove('fill-current');
+                icon.setAttribute('fill', 'none');
+            }
+        })
+        .catch(error => console.error('Error:', error));
     }
 
     function closeModal() {
         const modal = document.getElementById('post-modal');
         modal.classList.add('hidden');
         modal.classList.remove('flex');
+
+        currentPostId = null; // reset current post id
 
         // stop video  modal
         document.querySelectorAll('#post-modal video').forEach(v => v.pause());
@@ -297,6 +367,43 @@
             }
         });
     }
+
+    // Handle comment form submission
+    document.getElementById('comment-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const input = document.getElementById('comment-input');
+        const content = input.value.trim();
+
+        if (!content || !currentPostId) return;
+
+        fetch(`/posts/${currentPostId}/comments`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: JSON.stringify({ content: content })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Add new comment to the modal
+            const commentsContainer = document.getElementById('modal-comments');
+            const commentDiv = document.createElement('div');
+            commentDiv.className = 'text-sm';
+            commentDiv.innerHTML = `
+                <strong>${data.comment.user_name}</strong> ${data.comment.content}
+                <span class="text-gray-400 text-xs">${data.comment.created_at}</span>
+            `;
+            commentsContainer.appendChild(commentDiv);
+
+            // Clear input
+            input.value = '';
+
+            // Scroll to bottom
+            commentsContainer.scrollTop = commentsContainer.scrollHeight;
+        })
+        .catch(error => console.error('Error:', error));
+    });
 
     </script>
 </x-app-layout>
