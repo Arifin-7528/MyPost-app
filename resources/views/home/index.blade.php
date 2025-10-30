@@ -42,7 +42,7 @@
                             <img src="{{ asset($post->file_path) }}" alt="Post Image" class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
                             @elseif($post->isVideo())
                             <div class="relative">
-                                <video autoplay muted loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="this.muted = false; openModal({{ $post->id }})">
+                                <video autoplay muted loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
                                     <source src="{{ asset($post->file_path) }}" type="video/mp4">
                                     Browser Anda tidak mendukung tag video.
                                 </video>
@@ -91,6 +91,13 @@
         document.addEventListener('DOMContentLoaded', function() {
             const skeleton = document.getElementById('loading-skeleton');
             const content = document.getElementById('posts-content');
+
+            // If no posts, show content immediately without skeleton
+            if (postsData.length === 0) {
+                skeleton.style.display = 'none';
+                content.style.display = 'block';
+                return;
+            }
 
             // Show skeleton initially
             skeleton.style.display = 'grid';
@@ -148,15 +155,27 @@
                 }
             }
 
-            // Check media loading
-            checkMediaLoaded();
+            // Check media loading after a short delay to ensure DOM is ready
+            setTimeout(checkMediaLoaded, 100);
+        });
 
-            // Auto-play videos when content is loaded
-            setTimeout(function() {
-                document.querySelectorAll('video').forEach(v => {
-                    v.play().catch(err => console.log('Autoplay gagal:', err));
-                });
-            }, 100);
+        // Auto-play videos when content is loaded
+        setTimeout(function() {
+            document.querySelectorAll('video').forEach(v => {
+                v.play().catch(err => console.log('Autoplay gagal:', err));
+            });
+        }, 100);
+
+        // Add hover play/pause functionality for videos
+        document.querySelectorAll('video').forEach(video => {
+            video.addEventListener('mouseenter', function() {
+                this.muted = false; // Unmute on hover
+                this.play().catch(err => console.log('Hover play gagal:', err));
+            });
+            video.addEventListener('mouseleave', function() {
+                this.pause();
+                this.muted = true; // Mute back on leave
+            });
         });
     </script>
 
