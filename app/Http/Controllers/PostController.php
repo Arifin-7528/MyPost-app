@@ -65,6 +65,19 @@ class PostController extends Controller
         ]);
     }
 
+    public function getComments(Post $post)
+    {
+        $comments = $post->comments()->with('user')->latest()->get()->map(function ($comment) {
+            return [
+                'user_name' => $comment->user->name,
+                'content' => $comment->content,
+                'created_at' => $comment->created_at->diffForHumans(),
+            ];
+        });
+
+        return response()->json(['comments' => $comments]);
+    }
+
     public function comment(Request $request, Post $post)
     {
         $request->validate([

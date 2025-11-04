@@ -56,6 +56,11 @@ class User extends Authenticatable
         return $this->hasMany(Like::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function getProfilePhotoUrlAttribute()
     {
         return $this->profile_photo_path
