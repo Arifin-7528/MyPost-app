@@ -15,14 +15,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(5)->create();
+        // $this->call(RoleSeeder::class);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory(5)->create();
 
-        \App\Models\Post::factory(10)->create();
-        \App\Models\Like::factory(12)->create();
+        // User::factory()->create([
+        //     'name' => 'Admin User',
+        //     'email' => 'admin@example.com',
+        //     'role_id' => 1, // admin role
+        // ]);
+
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        //     'role_id' => 2, // user role
+        // ]);
+
+        // \App\Models\Post::factory(10)->create();
+        // \App\Models\Like::factory(12)->create();
+
+        // $this->call(ReportSeeder::class);
     }
 }

@@ -14,7 +14,7 @@ class ReportSeeder extends Seeder
     public function run(): void
     {
         Report::create([
-            'title' => 'Laporan Total Posts',
+            'title' => 'Total Posts',
             'description' => 'Total semua postingan',
             'type' => 'posts',
             'status' => 'completed',
@@ -22,7 +22,7 @@ class ReportSeeder extends Seeder
         ]);
 
         Report::create([
-            'title' => 'Laporan Total Users',
+            'title' => 'Total Users',
             'description' => 'Total semua user terdaftar',
             'type' => 'users',
             'status' => 'completed',
@@ -30,7 +30,7 @@ class ReportSeeder extends Seeder
         ]);
 
         Report::create([
-            'title' => 'Laporan Total Comments',
+            'title' => 'Total Comments',
             'description' => 'Total semua komentar',
             'type' => 'comments',
             'status' => 'completed',
@@ -38,7 +38,7 @@ class ReportSeeder extends Seeder
         ]);
 
         Report::create([
-            'title' => 'Laporan Total Activity',
+            'title' => 'Total Activity',
             'description' => 'Total aktivitas keseluruhan (posts + comments + likes)',
             'type' => 'activity',
             'status' => 'completed',

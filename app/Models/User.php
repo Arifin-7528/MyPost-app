@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'profile_photo_path',
+        'role_id',
     ];
 
     /**
@@ -59,6 +60,21 @@ class User extends Authenticatable
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role && $this->role->name === 'admin';
+    }
+
+    public function isUser()
+    {
+        return $this->role && $this->role->name === 'user';
     }
 
     public function getProfilePhotoUrlAttribute()

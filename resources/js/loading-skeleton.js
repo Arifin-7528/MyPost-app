@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const content = document.getElementById("posts-content");
 
     // If no posts, show content immediately without skeleton
-    if (postsData.length === 0) {
+    if (typeof postsData !== 'undefined' && postsData.length === 0) {
         skeleton.style.display = "none";
         content.style.display = "block";
         return;
