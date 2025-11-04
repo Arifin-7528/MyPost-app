@@ -23,7 +23,15 @@ class CommentsRelationManager extends RelationManager
                     ->limit(50)
                     ->searchable(),
 
-                TextColumn::make('post.title')
+                TextColumn::make('user.name')
+                    ->label('User')
+                    ->searchable(),
+
+                TextColumn::make('user.role.name')
+                    ->label('Role')
+                    ->searchable(),
+
+                TextColumn::make('post.caption')
                     ->label('Post')
                     ->limit(30)
                     ->searchable(),

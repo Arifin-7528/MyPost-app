@@ -33,9 +33,8 @@ class UsersTable
                     ->sortable()
                     ->alignCenter(),
 
-                TextColumn::make('comments_count')
-                    ->label('Comments')
-                    ->counts('comments')
+                TextColumn::make('role.name')
+                    ->label('Role')
                     ->sortable()
                     ->alignCenter(),
             ])

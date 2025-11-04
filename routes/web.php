@@ -9,7 +9,7 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->middleware(['auth', 'verified', 'role:user'])->name('home');
 
 
 
