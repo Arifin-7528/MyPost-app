@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Post;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -50,6 +51,21 @@ class ProfileController extends Controller
         $request->user()->save();
 
         return Redirect::route('profile.edit')->with('status', 'profile-updated');
+    }
+
+    /**
+     * Display the user's profile with their videos.
+     */
+    public function show(Request $request)
+    {
+        $posts = Post::where('user_id', auth()->id())
+            ->where('type', 'video')
+            ->with('user', 'comments.user')
+            ->withCount('likes')
+            ->latest()
+            ->get();
+
+        return view('profile.show', compact('posts'));
     }
 
     /**
