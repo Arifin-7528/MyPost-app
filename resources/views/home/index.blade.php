@@ -46,10 +46,7 @@
                                     <source src="{{ asset($post->file_path) }}" type="video/mp4">
                                     Browser Anda tidak mendukung tag video.
                                 </video>
-                                <button class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full" onclick="event.stopPropagation(); toggleMute(this.previousElementSibling)">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.414l3.969-3.816a1 1 0 011.616 0zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <!-- <button class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full" onclick="event.stopPropagation(); toggleMute(this.previousElementSibling)"> -->
                                 </button>
                             </div>
                             @endif
@@ -85,133 +82,17 @@
         </div>
     </div>
 
-
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const skeleton = document.getElementById('loading-skeleton');
-            const content = document.getElementById('posts-content');
-
-            // If no posts, show content immediately without skeleton
-            if (postsData.length === 0) {
-                skeleton.style.display = 'none';
-                content.style.display = 'block';
-                return;
-            }
-
-            // Show skeleton initially
-            skeleton.style.display = 'grid';
-            content.style.display = 'none';
-
-            // Set a maximum loading time (e.g., 5 seconds) to prevent infinite loading
-            const maxLoadingTime = 5000; // 5 seconds
-            let loadingTimeout = setTimeout(function() {
-                skeleton.style.display = 'none';
-                content.style.display = 'block';
-            }, maxLoadingTime);
-
-            // Function to check if images and videos are loaded
-            function checkMediaLoaded() {
-                const mediaElements = content.querySelectorAll('img, video');
-                let loadedCount = 0;
-                const totalMedia = mediaElements.length;
-
-                if (totalMedia === 0) {
-                    // No media, show content immediately
-                    clearTimeout(loadingTimeout);
-                    skeleton.style.display = 'none';
-                    content.style.display = 'block';
-                    return;
-                }
-
-                mediaElements.forEach(function(media) {
-                    if (media.complete || media.readyState >= 3) {
-                        loadedCount++;
-                    } else {
-                        media.addEventListener('load', function() {
-                            loadedCount++;
-                            if (loadedCount === totalMedia) {
-                                clearTimeout(loadingTimeout);
-                                skeleton.style.display = 'none';
-                                content.style.display = 'block';
-                            }
-                        });
-                        media.addEventListener('error', function() {
-                            loadedCount++;
-                            if (loadedCount === totalMedia) {
-                                clearTimeout(loadingTimeout);
-                                skeleton.style.display = 'none';
-                                content.style.display = 'block';
-                            }
-                        });
-                    }
-                });
-
-                // If all media are already loaded
-                if (loadedCount === totalMedia) {
-                    clearTimeout(loadingTimeout);
-                    skeleton.style.display = 'none';
-                    content.style.display = 'block';
-                }
-            }
-
-            // Check media loading after a short delay to ensure DOM is ready
-            setTimeout(checkMediaLoaded, 100);
-        });
-
-        // Auto-play videos when content is loaded
-        setTimeout(function() {
-            document.querySelectorAll('video').forEach(v => {
-                v.play().catch(err => console.log('Autoplay gagal:', err));
-            });
-        }, 100);
-
-        // Add hover play/pause functionality for videos
-        document.querySelectorAll('video').forEach(video => {
-            video.addEventListener('mouseenter', function() {
-                this.muted = false; // Unmute on hover
-                this.play().catch(err => console.log('Hover play gagal:', err));
-            });
-            video.addEventListener('mouseleave', function() {
-                this.pause();
-                this.muted = true; // Mute back on leave
-            });
-        });
-    </script>
-
-    <script>
-    document.querySelectorAll('video').forEach(v => {
-        v.addEventListener('play', function() {
-            document.querySelectorAll('video').forEach(other => {
-                if (other !== v) {
-                    other.pause();
-                }
-            });
-        });
-    });
-
-    function toggleMute(video) {
-        if (video.muted) {
-            video.muted = false;
-            video.nextElementSibling.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.414l3.969-3.816a1 1 0 011.616 0z" clip-rule="evenodd"></path></svg>';
-        } else {
-            video.muted = true;
-            video.nextElementSibling.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.414l3.969-3.816a1 1 0 011.616 0zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>';
-        }
-    }
-    </script>
-
     <!-- Modal untuk Gambar/Video -->
     <div id="post-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-50">
-        <div class="flex flex-col lg:flex-row bg-gray-900 rounded-2xl w-full max-w-5xl overflow-hidden shadow-2xl">
+        <div class="flex flex-col lg:flex-row bg-gray-900 rounded-2xl w-full max-w-5xl h-[90vh] overflow-hidden shadow-2xl">
             <!-- Bagian Media -->
             <div class="w-full lg:w-3/5 bg-black flex justify-center items-center">
-                <img id="modal-image" class="w-full h-full object-contain hidden">
-                <video id="modal-video" class="w-full h-full hidden" autoplay muted loop playsinline></video>
+                <img id="modal-image" class="max-h-full max-w-full object-contain hidden">
+                <video id="modal-video" class="max-h-full max-w-full object-contain hidden" autoplay muted loop playsinline></video>
             </div>
 
             <!-- Bagian Detail -->
-            <div class="w-full lg:w-2/5 bg-gray-800 text-white flex flex-col relative">
+            <div class="w-full lg:w-2/5 bg-gray-800 text-white flex flex-col relative h-full">
                 <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500" onclick="closeModal()">✖</button>
 
                 <div id="modal-header" class="flex items-center gap-3 border-b border-gray-700 p-4">
@@ -241,188 +122,21 @@
 
     @php
     $postsData = $posts->map(function($p) {
-        return [
-            'id' => $p->id,
-            'type' => $p->isImage() ? 'image' : 'video',
-            'file_path' => asset($p->file_path),
-            'caption' => $p->caption,
-            'user_name' => $p->user->name,
-            'user_photo' => $p->user->profile_photo_url,
-            'created_at' => $p->created_at->format('d/m/Y'),
-            'likes_count' => $p->likes_count,
-            'comments' => $p->comments->map(function($c) {
-                return [
-                    'user_name' => $c->user->name,
-                    'content' => $c->content,
-                    'created_at' => $c->created_at->diffForHumans(),
-                ];
-            }),
-        ];
+    return [
+    'id' => $p->id,
+    'type' => $p->isImage() ? 'image' : 'video',
+    'file_path' => asset($p->file_path),
+    'caption' => $p->caption,
+    'user_name' => $p->user->name,
+    'user_photo' => $p->user->profile_photo_url,
+    'created_at' => $p->created_at->format('d/m/Y'),
+    'likes_count' => $p->likes_count,
+    ];
     });
     @endphp
-
     <script>
-    const postsData = @json($postsData);
-    let currentPostId = null;
-
-    function openModal(id) {
-        const post = postsData.find(p => p.id === id);
-        const modal = document.getElementById('post-modal');
-        const img = document.getElementById('modal-image');
-        let vid = document.getElementById('modal-video');
-
-        currentPostId = id; // set current post id
-
-        // reset
-        img.classList.add('hidden');
-        vid.classList.add('hidden');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-
-        // stop semua video di background
-        document.querySelectorAll('video').forEach(v => {
-            v.pause();
-            v.currentTime = 0;
-        });
-
-        // tampilkan media
-        if (post.type === 'image') {
-            img.src = post.file_path;
-            img.classList.remove('hidden');
-        } else {
-            // buat elemen video baru biar mute-nya benar-benar reset
-            const newVideo = document.createElement('video');
-            newVideo.id = 'modal-video';
-            newVideo.src = post.file_path;
-            newVideo.className = 'w-full h-full rounded-lg';
-            newVideo.autoplay = true;
-            newVideo.controls = true;
-            newVideo.playsInline = true;
-            newVideo.muted = false; // pastikan tidak mute
-            newVideo.currentTime = 0;
-
-            // ganti elemen lama dengan yang baru
-            vid.parentNode.replaceChild(newVideo, vid);
-            vid = newVideo;
-
-            // mainkan video
-            vid.play().catch(err => console.log('Autoplay gagal:', err));
-        }
-
-        // isi data user
-        document.getElementById('modal-user-photo').src = post.user_photo;
-        document.getElementById('modal-username').textContent = post.user_name;
-        document.getElementById('modal-date').textContent = post.created_at;
-        document.getElementById('modal-caption').textContent = post.caption || '';
-
-        // isi likes count
-        document.getElementById('modal-likes-count').textContent = post.likes_count + ' suka';
-
-        // isi comments
-        const commentsContainer = document.getElementById('modal-comments');
-        commentsContainer.innerHTML = '';
-        if (post.comments && post.comments.length > 0) {
-            post.comments.forEach(comment => {
-                const commentDiv = document.createElement('div');
-                commentDiv.className = 'text-sm';
-                commentDiv.innerHTML = `
-                    <strong>${comment.user_name}</strong> ${comment.content}
-                    <span class="text-gray-400 text-xs">${comment.created_at}</span>
-                `;
-                commentsContainer.appendChild(commentDiv);
-            });
-        } else {
-            commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Belum ada komentar.</p>';
-        }
-
-        // reset form komentar
-        document.getElementById('comment-input').value = '';
-    }
-
-    function toggleLike(postId, button) {
-        fetch(`/posts/${postId}/like`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            const countSpan = button.querySelector('span');
-            const icon = button.querySelector('svg');
-            countSpan.textContent = data.likes_count;
-            if (data.liked) {
-                icon.classList.add('fill-current');
-                icon.setAttribute('fill', 'currentColor');
-            } else {
-                icon.classList.remove('fill-current');
-                icon.setAttribute('fill', 'none');
-            }
-        })
-        .catch(error => console.error('Error:', error));
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('post-modal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-
-        currentPostId = null; // reset current post id
-
-        // stop video  modal
-        document.querySelectorAll('#post-modal video').forEach(v => v.pause());
-
-        // aktifkan lagi semua video di feed dan reset ikon speaker ke mute
-        document.querySelectorAll('#posts-content video').forEach(v => {
-            v.muted = true; // pastikan kembali mute
-            v.currentTime = 0; // reset biar mulai dari awal
-            v.play().catch(err => console.log('Autoplay gagal setelah modal ditutup:', err));
-
-            // reset ikon speaker ke mute
-            const speakerBtn = v.nextElementSibling;
-            if (speakerBtn) {
-                speakerBtn.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.414l3.969-3.816a1 1 0 011.616 0zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>';
-            }
-        });
-    }
-
-    // Handle comment form submission
-    document.getElementById('comment-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const input = document.getElementById('comment-input');
-        const content = input.value.trim();
-
-        if (!content || !currentPostId) return;
-
-        fetch(`/posts/${currentPostId}/comments`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ content: content })
-        })
-        .then(response => response.json())
-        .then(data => {
-            // Add new comment to the modal
-            const commentsContainer = document.getElementById('modal-comments');
-            const commentDiv = document.createElement('div');
-            commentDiv.className = 'text-sm';
-            commentDiv.innerHTML = `
-                <strong>${data.comment.user_name}</strong> ${data.comment.content}
-                <span class="text-gray-400 text-xs">${data.comment.created_at}</span>
-            `;
-            commentsContainer.appendChild(commentDiv);
-
-            // Clear input
-            input.value = '';
-
-            // Scroll to bottom
-            commentsContainer.scrollTop = commentsContainer.scrollHeight;
-        })
-        .catch(error => console.error('Error:', error));
-    });
-
+        const postsData = @json($postsData);
     </script>
+
+
 </x-app-layout>
