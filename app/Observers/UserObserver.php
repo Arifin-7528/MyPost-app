@@ -18,7 +18,7 @@ class UserObserver
     {
         Log::info('UserObserver: Updating reports');
 
-        // Update users report
+        // update users report
         $usersReport = Report::where('type', 'users')->first();
         if ($usersReport) {
             $usersReport->total = User::count();
@@ -29,7 +29,7 @@ class UserObserver
             Log::info('UserObserver: Users report not found');
         }
 
-        // Update activity report
+        // update activity report
         $activityReport = Report::where('type', 'activity')->first();
         if ($activityReport) {
             $activityReport->total = \App\Models\Post::count() + \App\Models\Comment::count() + \App\Models\Like::count();

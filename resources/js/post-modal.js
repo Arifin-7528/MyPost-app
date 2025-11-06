@@ -35,7 +35,7 @@ function openModal(id) {
         img.src = post.file_path;
         img.classList.remove('hidden');
     } else {
-        // buat elemen video baru biar mute-nya benar-benar reset
+        // buat elemen video baru untuk menghindari masalah autoplay
         const newVideo = document.createElement('video');
         newVideo.id = 'modal-video';
         newVideo.src = post.file_path;
@@ -43,15 +43,15 @@ function openModal(id) {
         newVideo.autoplay = true;
         newVideo.controls = true;
         newVideo.playsInline = true;
-        newVideo.loop = true; // tambahkan loop
-        newVideo.muted = false; // pastikan tidak mute
+        newVideo.loop = true;
+        newVideo.muted = false;
         newVideo.currentTime = 0;
 
         // ganti elemen lama dengan yang baru
         vid.parentNode.replaceChild(newVideo, vid);
         vid = newVideo;
 
-        // mainkan video
+        // play video
         vid.play().catch(err => console.log('Autoplay gagal:', err));
     }
 
@@ -61,14 +61,14 @@ function openModal(id) {
     document.getElementById('modal-date').textContent = post.created_at;
     document.getElementById('modal-caption').textContent = post.caption || '';
 
-    // isi likes count
+    // likes
     document.getElementById('modal-likes-count').textContent = post.likes_count + ' suka';
 
-    // isi comments
+    // comments
     const commentsContainer = document.getElementById('modal-comments');
     commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Loading comments...</p>';
 
-    // Fetch comments
+    // fetch comments
     fetch(`/posts/${id}/comments`)
         .then(response => response.json())
         .then(data => {
@@ -92,7 +92,7 @@ function openModal(id) {
             commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Error loading comments.</p>';
         });
 
-    // reset form komentar
+    // reset form coments
     document.getElementById('comment-input').value = '';
 }
 
@@ -130,21 +130,16 @@ function closeModal() {
     // stop video  modal
     document.querySelectorAll('#post-modal video').forEach(v => v.pause());
 
-    // aktifkan lagi semua video di feed dan reset ikon speaker ke mute
+    // mengaktifkan semua video di feed
     document.querySelectorAll('#posts-content video').forEach(v => {
         v.muted = true; // kembali mute
         v.currentTime = 0; // reset mulai dari awal
         v.play().catch(err => console.log('Autoplay gagal setelah modal ditutup:', err));
 
-        // // reset ikon speaker ke mute
-        // const speakerBtn = v.nextElementSibling;
-        // if (speakerBtn) {
-        //     speakerBtn.innerHTML = '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.816L4.414 13H2a1 1 0 01-1-1V8a1 1 0 01-1h2.414l3.969-3.816a1 1 0 011.616 0zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>';
-        // }
     });
 }
 
-// Handle comment form submission
+// handle comment form submission
 document.addEventListener('DOMContentLoaded', function() {
     const commentForm = document.getElementById('comment-form');
     if (commentForm) {
@@ -167,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Add new comment to the modal
+                    // menambahkan komentar baru ke dalam modal
                     const commentsContainer = document.getElementById('modal-comments');
                     const commentDiv = document.createElement('div');
                     commentDiv.className = 'text-sm';
@@ -177,10 +172,10 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
                     commentsContainer.appendChild(commentDiv);
 
-                    // Clear input
+                    // clear input
                     input.value = '';
 
-                    // Scroll to bottom
+                    // scroll to bottom
                     commentsContainer.scrollTop = commentsContainer.scrollHeight;
                 })
                 .catch(error => console.error('Error:', error));

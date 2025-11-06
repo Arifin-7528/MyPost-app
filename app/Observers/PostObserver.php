@@ -18,7 +18,7 @@ class PostObserver
     {
         Log::info('PostObserver: Updating reports');
 
-        // Update posts report
+        // update posts report
         $postsReport = Report::where('type', 'posts')->first();
         if ($postsReport) {
             $postsReport->total = Post::count();
@@ -29,7 +29,7 @@ class PostObserver
             Log::info('PostObserver: Posts report not found');
         }
 
-        // Update activity report
+        // update activity report
         $activityReport = Report::where('type', 'activity')->first();
         if ($activityReport) {
             $activityReport->total = Post::count() + \App\Models\Comment::count() + \App\Models\Like::count();

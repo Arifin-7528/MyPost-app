@@ -14,7 +14,7 @@ class CommentObserver
 
     private function updateReports()
     {
-        // Update comments report
+        // update comments report
         $commentsReport = Report::where('type', 'comments')->first();
         if ($commentsReport) {
             $commentsReport->total = Comment::count();
@@ -22,7 +22,7 @@ class CommentObserver
             $commentsReport->save();
         }
 
-        // Update activity report
+        // update activity report
         $activityReport = Report::where('type', 'activity')->first();
         if ($activityReport) {
             $activityReport->total = \App\Models\Post::count() + Comment::count() + \App\Models\Like::count();

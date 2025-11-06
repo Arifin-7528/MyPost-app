@@ -19,7 +19,7 @@ class LikeObserver
 
     private function updateReports()
     {
-        // Update activity report (likes are part of activity)
+        // update activity report (likes are part of activity)
         $activityReport = Report::where('type', 'activity')->first();
         if ($activityReport) {
             $activityReport->total = \App\Models\Post::count() + \App\Models\Comment::count() + Like::count();

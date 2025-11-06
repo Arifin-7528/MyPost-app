@@ -82,16 +82,16 @@
         </div>
     </div>
 
-    <!-- Modal untuk Gambar/Video -->
+    <!-- modal untuk post -->
     <div id="post-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-50">
         <div class="flex flex-col lg:flex-row bg-gray-900 rounded-2xl w-full max-w-5xl h-[90vh] overflow-hidden shadow-2xl">
-            <!-- Bagian Media -->
+            <!-- media -->
             <div class="w-full lg:w-3/5 bg-black flex justify-center items-center">
                 <img id="modal-image" class="max-h-full max-w-full object-contain hidden">
                 <video id="modal-video" class="max-h-full max-w-full object-contain hidden" autoplay muted loop playsinline></video>
             </div>
 
-            <!-- Bagian Detail -->
+            <!-- detail -->
             <div class="w-full lg:w-2/5 bg-gray-800 text-white flex flex-col relative h-full">
                 <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500" onclick="closeModal()">✖</button>
 
@@ -109,7 +109,7 @@
 
                 <div id="modal-comments" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm"></div>
 
-                <!-- Form komentar -->
+                <!-- form komentar -->
                 <div class="p-4 border-t border-gray-700">
                     <form id="comment-form" class="flex gap-2">
                         <input type="text" id="comment-input" placeholder="Tambahkan komentar..." class="flex-1 bg-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" maxlength="255">

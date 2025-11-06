@@ -28,7 +28,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Redirect berdasarkan role
+        // redirect berdasarkan role
         if (Auth::user()->role_id == 1) {
             return redirect('/admin');
         } else {
