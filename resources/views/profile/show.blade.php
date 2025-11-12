@@ -8,12 +8,12 @@
                         <img src="{{ auth()->user()->profile_photo_url }}" alt="Profile Photo" class="w-20 h-20 rounded-full mr-6 border-4 border-gray-300 dark:border-gray-600">
                         <div class="flex items-center gap-6">
                             <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ auth()->user()->name }}</h1>
-                            <p class="text-gray-600 dark:text-gray-400">{{ $posts->count() }} Videos</p>
+                            <p class="text-gray-600 dark:text-gray-400">{{ $posts->count() }} Posts</p>
                             <p class="text-gray-600 dark:text-gray-400">{{ $posts->sum('likes_count') }} Likes</p>
                         </div>
                     </div>
 
-                    <!-- Videos Section -->
+                    <!-- Posts Section -->
                     <div id="loading-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @for($i = 0; $i < 6; $i++)
                             <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow animate-pulse">
@@ -50,10 +50,16 @@
                                 </div>
 
                                 <div class="relative">
-                                    <video autoplay muted loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
-                                        <source src="{{ asset($post->file_path) }}" type="video/mp4">
-                                        Browser Anda tidak mendukung tag video.
-                                    </video>
+                            @if($post->isImage())
+                            <img src="{{ asset($post->file_path) }}" alt="Post Image" class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
+                            @elseif($post->isVideo())
+                            <div class="relative">
+                                <video loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
+                                    <source src="{{ asset($post->file_path) }}" type="video/mp4">
+                                    Browser Anda tidak mendukung tag video.
+                                </video>
+                            </div>
+                            @endif
                                 </div>
 
                                 @if($post->caption)
@@ -80,7 +86,7 @@
                             @endforeach
                         </div>
                         @else
-                        <p class="text-center text-gray-500 dark:text-gray-400">Belum ada video. Jadilah yang pertama memposting video!</p>
+                        <p class="text-center text-gray-500 dark:text-gray-400">belum ada post. jadilah yang pertama memposting!</p>
                         @endif
                     </div>
                 </div>
@@ -88,15 +94,16 @@
         </div>
     </div>
 
-    <!-- Modal untuk Video -->
+    <!-- modal untuk post -->
     <div id="post-modal" class="fixed inset-0 bg-black bg-opacity-70 hidden justify-center items-center z-50">
         <div class="flex flex-col lg:flex-row bg-gray-900 rounded-2xl w-full max-w-5xl h-[90vh] overflow-hidden shadow-2xl">
-            <!-- Bagian Media -->
+            <!-- media -->
             <div class="w-full lg:w-3/5 bg-black flex justify-center items-center">
-                <video id="modal-video" class="max-h-full max-w-full object-contain" autoplay muted loop playsinline></video>
+                <img id="modal-image" class="max-h-full max-w-full object-contain hidden">
+                <video id="modal-video" class="max-h-full max-w-full object-contain hidden" autoplay muted loop playsinline></video>
             </div>
 
-            <!-- Bagian Detail -->
+            <!-- detail -->
             <div class="w-full lg:w-2/5 bg-gray-800 text-white flex flex-col relative h-full">
                 <button class="absolute top-2 right-2 text-gray-400 hover:text-red-500" onclick="closeModal()">✖</button>
 
@@ -114,7 +121,7 @@
 
                 <div id="modal-comments" class="flex-1 overflow-y-auto p-4 space-y-2 text-sm"></div>
 
-                <!-- Form komentar -->
+                <!-- form komentar -->
                 <div class="p-4 border-t border-gray-700">
                     <form id="comment-form" class="flex gap-2">
                         <input type="text" id="comment-input" placeholder="Tambahkan komentar..." class="flex-1 bg-gray-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" maxlength="255">
@@ -129,7 +136,7 @@
     $postsData = $posts->map(function($p) {
     return [
     'id' => $p->id,
-    'type' => 'video',
+    'type' => $p->isImage() ? 'image' : 'video',
     'file_path' => asset($p->file_path),
     'caption' => $p->caption,
     'user_name' => $p->user->name,
