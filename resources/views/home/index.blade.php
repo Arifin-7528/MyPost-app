@@ -1,7 +1,6 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     <div id="loading-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         @for($i = 0; $i < 6; $i++)
@@ -42,12 +41,12 @@
                             <img src="{{ asset($post->file_path) }}" alt="Post Image" class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
                             @elseif($post->isVideo())
                             <div class="relative">
-                                <video autoplay muted loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
+                                <video loop playsinline class="w-full h-64 object-cover rounded-lg mb-4 cursor-pointer" onclick="openModal({{ $post->id }})">
                                     <source src="{{ asset($post->file_path) }}" type="video/mp4">
                                     Browser Anda tidak mendukung tag video.
                                 </video>
                                 <!-- <button class="absolute bottom-2 right-2 bg-black bg-opacity-50 text-white p-2 rounded-full" onclick="event.stopPropagation(); toggleMute(this.previousElementSibling)"> -->
-                                </button>
+                                <!-- </button> -->
                             </div>
                             @endif
 
@@ -75,10 +74,9 @@
                         @endforeach
                     </div>
                     @else
-                    <p class="text-center text-gray-500 dark:text-gray-400">Belum ada postingan. Jadilah yang pertama memposting!</p>
+                    <p class="text-center text-gray-500 dark:text-gray-400">belum ada postingan. jadilah yang pertama memposting!</p>
                     @endif
                 </div>
-            </div>
         </div>
     </div>
 

@@ -1,14 +1,14 @@
 let currentPostId = null;
 
-function openModal(id) {
+function bukaModal(id) {
     if (typeof postsData === 'undefined') {
-        console.error('postsData is not defined');
+        console.error('postsData tidak didefinisikan');
         return;
     }
 
     const post = postsData.find(p => p.id === id);
     if (!post) {
-        console.error('Post not found:', id);
+        console.error('post tidak ditemukan:', id);
         return;
     }
 
@@ -16,7 +16,7 @@ function openModal(id) {
     const img = document.getElementById('modal-image');
     let vid = document.getElementById('modal-video');
 
-    currentPostId = id; // set current post id
+    currentPostId = id; // set id post saat ini
 
     // reset
     img.classList.add('hidden');
@@ -24,7 +24,7 @@ function openModal(id) {
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    // stop semua video di background
+    // hentikan semua video di background
     document.querySelectorAll('video').forEach(v => {
         v.pause();
         v.currentTime = 0;
@@ -35,7 +35,7 @@ function openModal(id) {
         img.src = post.file_path;
         img.classList.remove('hidden');
     } else {
-        // buat elemen video baru untuk menghindari masalah autoplay
+        // buat elemen video baru untuk menghindari masalah pada autoplay
         const newVideo = document.createElement('video');
         newVideo.id = 'modal-video';
         newVideo.src = post.file_path;
@@ -52,7 +52,7 @@ function openModal(id) {
         vid = newVideo;
 
         // play video
-        vid.play().catch(err => console.log('Autoplay gagal:', err));
+        vid.play().catch(err => console.log('autoplay gagal:', err));
     }
 
     // isi data user
@@ -66,7 +66,7 @@ function openModal(id) {
 
     // comments
     const commentsContainer = document.getElementById('modal-comments');
-    commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Loading comments...</p>';
+    commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">memuat komentar...</p>';
 
     // fetch comments
     fetch(`/posts/${id}/comments`)
@@ -84,15 +84,15 @@ function openModal(id) {
                     commentsContainer.appendChild(commentDiv);
                 });
             } else {
-                commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Belum ada komentar.</p>';
+                commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">belum ada komentar.</p>';
             }
         })
         .catch(error => {
-            console.error('Error fetching comments:', error);
-            commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">Error loading comments.</p>';
+            console.error('error di:', error);
+            commentsContainer.innerHTML = '<p class="text-gray-400 text-sm">error memuat komentar.</p>';
         });
 
-    // reset form coments
+    // reset komentar
     document.getElementById('comment-input').value = '';
 }
 
@@ -117,27 +117,20 @@ function toggleLike(postId, button) {
                 icon.setAttribute('fill', 'none');
             }
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => console.error('error:', error));
 }
 
-function closeModal() {
+function tutupModal() {
     const modal = document.getElementById('post-modal');
     modal.classList.add('hidden');
     modal.classList.remove('flex');
 
-    currentPostId = null; // reset current post id
+    currentPostId = null; // reset id post
 
-    // stop video  modal
+    // hentikan video modal
     document.querySelectorAll('#post-modal video').forEach(v => v.pause());
 
-    // mengaktifkan semua video di feed
-    document.querySelectorAll('#posts-content video').forEach(v => {
-        v.muted = true; // kembali mute
-        v.currentTime = 0; // reset mulai dari awal
-        v.play().catch(err => console.log('Autoplay gagal setelah modal ditutup:', err));
-
-    });
-}
+    }
 
 // handle comment form submission
 document.addEventListener('DOMContentLoaded', function() {
@@ -178,12 +171,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // scroll to bottom
                     commentsContainer.scrollTop = commentsContainer.scrollHeight;
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error('error:', error));
         });
     }
 });
 
 // Export functions to window
-window.openModal = openModal;
+window.openModal = bukaModal;
 window.toggleLike = toggleLike;
-window.closeModal = closeModal;
+window.closeModal = tutupModal;

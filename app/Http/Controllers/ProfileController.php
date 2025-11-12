@@ -59,7 +59,6 @@ class ProfileController extends Controller
     public function show(Request $request)
     {
         $posts = Post::where('user_id', auth()->id())
-            ->where('type', 'video')
             ->with('user', 'comments.user')
             ->withCount('likes')
             ->latest()
